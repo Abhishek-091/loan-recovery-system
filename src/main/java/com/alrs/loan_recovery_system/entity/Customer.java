@@ -2,23 +2,29 @@ package com.alrs.loan_recovery_system.entity;
 
 import com.alrs.loan_recovery_system.entity.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "tbl_user")
+@Table(name = "tbl_customer")
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Setter
-public class User extends BaseEntity {
+public class Customer extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
+    private Long customerId;
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
@@ -63,10 +69,10 @@ public class User extends BaseEntity {
     private Boolean emailVerified;
 
 
-//    // Relationships
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private Set<Account> accounts = new HashSet<>();
+//  Relationships
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Account> accounts = new HashSet<>();
 //
 //    @OneToMany(mappedBy = "borrower", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JsonIgnore

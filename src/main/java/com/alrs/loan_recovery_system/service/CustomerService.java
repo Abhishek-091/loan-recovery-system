@@ -4,7 +4,7 @@ import com.alrs.loan_recovery_system.models.UserModel;
 
 import java.util.Map;
 
-public interface UserService {
+public interface CustomerService {
     void signUp(UserModel userModel);
     boolean isUsernameAvailable(String username);
     boolean isEmailAvailable(String email);
