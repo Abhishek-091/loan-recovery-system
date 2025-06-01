@@ -2,10 +2,13 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.12'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.openapi.generator' version '7.2.0'
 }
 
 group = 'com.alrs'
 version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
 
 java {
 	toolchain {
@@ -33,8 +36,107 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:3.4.3'
+
+	//OpenAPI Generator
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+
+	// Swagger annotations for generated code
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
+	implementation 'io.swagger.core.v3:swagger-models:2.2.20'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+
+
+// OpenAPI Generator Configuration
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$rootDir/src/main/resources/api/alrs-api.yaml"
+	outputDir = "$buildDir/generated"
+	apiPackage = "com.alrs.loan_recovery_system.api"
+	modelPackage = "com.alrs.loan_recovery_system.model"
+	configOptions = [
+			dateLibrary: "java8",
+			java8: "true",
+			delegatePattern: "true",
+			useTags: "true",
+			interfaceOnly: "true",
+			skipDefaultInterface: "true",
+			generateSupportingFiles: "false",
+			hideGenerationTimestamp: "true",
+			useSpringBoot3: "true",
+			openApiNullable: "false",
+			useBeanValidation: "true",
+			performBeanValidation: "true",
+			serializationLibrary: "jackson"
+	]
+	globalProperties = [
+			models: "",
+			apis: "",
+			supportingFiles: ""
+	]
+}
+
+// OpenAPI Validator (optional)
+openApiValidate {
+	inputSpec = "$rootDir/src/main/resources/api/alrs-api.yaml"
+}
+
+// Configure source sets to include generated code
+sourceSets {
+	main {
+		java {
+			srcDirs += "$buildDir/generated/src/main/java"
+		}
+	}
+}
+
+// Make sure generated code is compiled
+compileJava.dependsOn tasks.openApiGenerate
+
+// Clean generated code
+clean {
+	delete "$buildDir/generated"
+}
+
+// Custom task to generate only models
+task generateModels(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = "spring"
+	inputSpec = "$rootDir/src/main/resources/api/alrs-api.yaml"
+	outputDir = "$buildDir/generated-models"
+	modelPackage = "com.alrs.loan_recovery_system.model"
+	globalProperties = [
+			models: "",
+			modelDocs: "false"
+	]
+	configOptions = [
+			dateLibrary: "java8",
+			java8: "true",
+			useSpringBoot3: "true",
+			serializationLibrary: "jackson"
+	]
+}
+
+// Custom task to generate only APIs
+task generateApis(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = "spring"
+	inputSpec = "$rootDir/src/main/resources/api/alrs-api.yaml"
+	outputDir = "$buildDir/generated-apis"
+	apiPackage = "com.alrs.loan_recovery_system.api"
+	globalProperties = [
+			apis: "",
+			apiDocs: "false"
+	]
+	configOptions = [
+			dateLibrary: "java8",
+			java8: "true",
+			delegatePattern: "true",
+			interfaceOnly: "true",
+			useSpringBoot3: "true"
+	]
 }

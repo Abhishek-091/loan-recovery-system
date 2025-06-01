@@ -1,0 +1,26 @@
+# Validate OpenAPI specification
+./gradlew openApiValidate
+
+# Generate all code (APIs, Models, and supporting files)
+./gradlew openApiGenerate
+
+# Generate only models
+./gradlew generateModels
+
+# Generate only APIs
+./gradlew generateApis
+
+# Clean generated code
+./gradlew clean
+
+# Build project (includes code generation)
+./gradlew build
+
+# Run the application
+./gradlew bootRun
+
+# Generate code and compile
+./gradlew compileJava
+
+# View generated files
+find build/generated -name "*.java" | head -10

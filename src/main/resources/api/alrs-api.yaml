@@ -1,0 +1,133 @@
+openapi: 3.0.3
+info:
+  title: Loan Recovery System API
+  description: API for managing loan recovery operations
+  version: 1.0.0
+  contact:
+    name: Abhishek Patidar
+    email: test@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  - url: https://api.loanrecovery.com
+    description: Production server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/auth/signup:
+    post:
+      tags:
+        - Testing
+      summary: Register a new user
+      description: Creates a new user account in the system
+      operationId: signUp
+      security: []  # No authentication required for signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+            example:
+              username: "john_doe"
+              email: "john.doe@example.com"
+              password: "SecurePassword123"
+              firstName: "John"
+              lastName: "Doe"
+              phoneNumber: "+1234567890"
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: string
+#                $ref: '#/components/schemas/ApiResponse'
+              example:
+                message: "User signed up successfully"
+                status: "success"
+#        '400':
+#          description: Invalid request data
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorResponse'
+#        '409':
+#          description: User already exists
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserRegistrationRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[a-zA-Z0-9_]+$'
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        password:
+          type: string
+          minLength: 8
+          maxLength: 100
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+        phoneNumber:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        tokenType:
+          type: string
+          default: "Bearer"
+        expiresIn:
+          type: integer
+          format: int64
+        message:
+          type: string
