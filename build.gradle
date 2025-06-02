@@ -45,6 +45,14 @@ dependencies {
 	// Swagger annotations for generated code
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.20'
 	implementation 'io.swagger.core.v3:swagger-models:2.2.20'
+
+	// Logging Dependencies
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+	// Jackson for JSON processing
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations'
 }
 
 tasks.named('test') {
